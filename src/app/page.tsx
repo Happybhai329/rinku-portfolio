@@ -95,6 +95,7 @@ export default function Home() {
 
   // Contact form state
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", projectType: "Short Form", message: "" });
 
   // 1. Preloader simulation
