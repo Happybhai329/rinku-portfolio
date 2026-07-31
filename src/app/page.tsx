@@ -1040,8 +1040,20 @@ export default function Home() {
       </main>
 
       <footer className="w-full bg-black border-t border-white/5 py-12 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6 font-mono text-[10px] text-zinc-500 select-none uppercase tracking-widest">
-        <div>
-          © {currentYear} Rinku Dhakad. All rights reserved.
+        <div className="flex flex-col gap-1.5 text-center md:text-left">
+          <span>© {currentYear} Rinku Dhakad. All rights reserved.</span>
+          <span className="text-[9px] text-zinc-600 font-sans tracking-normal capitalize">
+            Designed & Developed by{" "}
+            <a
+              href="mailto:bhasinhappy0506@gmail.com"
+              className="text-gold-500/90 hover:text-gold-400 font-bold font-mono uppercase tracking-wider transition-colors border-b border-gold-500/30 pb-0.5"
+              title="Contact Developer: bhasinhappy0506@gmail.com"
+              onMouseEnter={() => setIsHoveredInteractive(true)}
+              onMouseLeave={() => setIsHoveredInteractive(false)}
+            >
+              Happy Bhasin
+            </a>
+          </span>
         </div>
         <div className="flex items-center gap-6">
           <a href="https://www.instagram.com/rinku.dhakadd/" target="_blank" rel="noopener noreferrer" className="hover:text-gold-500 transition-colors">
