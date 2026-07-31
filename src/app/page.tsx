@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowUpRight, 
   ChevronDown, 
-  Mail, 
   Send, 
   Sparkles, 
   Award, 
@@ -15,9 +14,16 @@ import {
   Play, 
   ExternalLink,
   BookOpen,
-  Volume2,
-  X
+  X,
+  Smartphone,
+  Video
 } from "lucide-react";
+
+import { featuredProjects, shortsGallery, Project } from "@/data/projectsData";
+import ColorWheel from "@/components/ColorWheel";
+import SpeedRamp from "@/components/SpeedRamp";
+import InteractiveTimeline from "@/components/InteractiveTimeline";
+import CertificateModal from "@/components/CertificateModal";
 
 // Custom SVG components for brand logos because they are removed in Lucide v1.x
 const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -54,12 +60,6 @@ const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const loadingWords = ["STORYTELLING", "MOTION GRAPHICS", "COLOR GRADING", "SOUND DESIGN", "RINKU DHAKAD"];
 
-import { projectsData, Project } from "@/data/projectsData";
-import ColorWheel from "@/components/ColorWheel";
-import SpeedRamp from "@/components/SpeedRamp";
-import InteractiveTimeline from "@/components/InteractiveTimeline";
-import CertificateModal from "@/components/CertificateModal";
-
 export default function Home() {
   // Preloader state
   const [loadingPercent, setLoadingPercent] = useState(0);
@@ -77,18 +77,15 @@ export default function Home() {
   // Certificate Modal state
   const [isCertOpen, setIsCertOpen] = useState(false);
 
-  // Project hover preview states (which card is hovered)
+  // Project hover preview states
   const [hoveredProjectId, setHoveredProjectId] = useState<string | null>(null);
 
   // Contact form state
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", projectType: "Short Form", message: "" });
 
-
-
   // 1. Preloader simulation
   useEffect(() => {
-    // Count up from 0 to 100
     const interval = setInterval(() => {
       setLoadingPercent((prev) => {
         if (prev >= 100) {
@@ -96,13 +93,11 @@ export default function Home() {
           setTimeout(() => setIsLoading(false), 500);
           return 100;
         }
-        // Accelerating curve
         const step = prev < 30 ? 1 : prev < 70 ? 2 : prev < 90 ? 3 : 1;
         return prev + step;
       });
     }, 18);
 
-    // Swap words
     const wordInterval = setInterval(() => {
       setLoadingWordIndex((prev) => (prev + 1) % loadingWords.length);
     }, 500);
@@ -113,7 +108,7 @@ export default function Home() {
     };
   }, []);
 
-  // 2. Mouse tracker for custom cursor & hover spotlights
+  // 2. Mouse tracker for custom cursor
   useEffect(() => {
     const handleMouseMoveGlobal = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
@@ -140,12 +135,10 @@ export default function Home() {
     card.style.setProperty("--y", `${y}px`);
   };
 
-  // Handle Form change
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Submit contact form mock
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
@@ -155,7 +148,6 @@ export default function Home() {
     }, 4000);
   };
 
-  // Scroll smoothly to element id
   const scrollToId = (id: string) => {
     const el = document.getElementById(id);
     if (el) {
@@ -175,13 +167,11 @@ export default function Home() {
             exit={{ y: "-100%", transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
             className="fixed inset-0 bg-dark-950 z-[9999] flex flex-col justify-between p-8 select-none"
           >
-            {/* Top Logo */}
             <div className="flex justify-between items-center text-xs font-mono tracking-widest text-zinc-500 uppercase">
               <span>RINKU DHAKAD PORTFOLIO</span>
-              <span>EST. 2024</span>
+              <span>EST. 2026</span>
             </div>
 
-            {/* Center Loading Words */}
             <div className="flex flex-col items-center justify-center gap-4">
               <span className="text-[10px] font-mono tracking-widest text-gold-500/80 uppercase">
                 POST-PRODUCTION MASTERCLASS
@@ -200,7 +190,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Bottom percentage */}
             <div className="flex justify-between items-end">
               <div className="flex flex-col gap-1">
                 <span className="text-[9px] font-mono text-zinc-600 uppercase tracking-widest">LOADING ASSETS</span>
@@ -246,7 +235,6 @@ export default function Home() {
 
       {/* ================= WEBSITE HEADER / NAVIGATION ================= */}
       <header className="fixed top-0 left-0 right-0 z-40 bg-dark-950/75 backdrop-blur-md border-b border-white/5 py-4 px-6 md:px-12 flex justify-between items-center select-none">
-        {/* Brand logo */}
         <div 
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           className="flex items-center gap-2 cursor-pointer group"
@@ -261,9 +249,8 @@ export default function Home() {
           </span>
         </div>
 
-        {/* Links */}
         <nav className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-widest text-zinc-400">
-          {["showreel", "projects", "skills", "about", "why-me", "contact"].map((sec) => (
+          {["showreel", "projects", "shorts", "skills", "about", "why-me", "contact"].map((sec) => (
             <button
               key={sec}
               onClick={() => scrollToId(sec)}
@@ -276,7 +263,6 @@ export default function Home() {
           ))}
         </nav>
 
-        {/* Header CTA */}
         <button
           onClick={() => scrollToId("contact")}
           className="px-4 py-2 border border-gold-500/30 bg-gold-500/5 hover:bg-gold-500 hover:text-dark-950 text-gold-500 text-xs font-mono uppercase tracking-widest rounded transition-all cursor-pointer shadow-[0_0_15px_rgba(197,168,128,0.1)]"
@@ -292,23 +278,17 @@ export default function Home() {
 
         {/* ================= HERO SECTION ================= */}
         <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-black py-20 px-6 md:px-12">
-          {/* Loop Reel Video Background */}
-          <div className="absolute inset-0 z-0 opacity-40">
-            {/* Dark vignette overlay */}
-            <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/70 to-dark-950 z-10" />
-            <video
-              src="https://assets.mixkit.co/videos/preview/mixkit-cinematic-video-of-a-mysterious-planet-41710-large.mp4"
-              className="w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
+          {/* Background overlay */}
+          <div className="absolute inset-0 z-0 opacity-30">
+            <div className="absolute inset-0 bg-gradient-to-b from-dark-950 via-dark-950/80 to-dark-950 z-10" />
+            <iframe
+              src="https://www.youtube-nocookie.com/embed/AwC5Hm5W1yw?autoplay=1&mute=1&controls=0&loop=1&playlist=AwC5Hm5W1yw&modestbranding=1"
+              title="Hero Background Reel"
+              className="w-full h-full object-cover scale-150 pointer-events-none"
             />
           </div>
 
           <div className="max-w-5xl w-full z-10 flex flex-col items-center text-center gap-8 md:gap-12 mt-12">
-            
-            {/* Top Badge */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -319,7 +299,6 @@ export default function Home() {
               Video Editor | Motion graphics | Colorist
             </motion.div>
 
-            {/* Main Headline */}
             <div className="flex flex-col gap-2 max-w-4xl text-reveal-container">
               <motion.h1 
                 initial={{ y: "100%" }}
@@ -347,7 +326,6 @@ export default function Home() {
               </motion.h1>
             </div>
 
-            {/* Subheadline */}
             <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -357,7 +335,6 @@ export default function Home() {
               Video Editor specializing in cinematic storytelling, high-retention short-form content, motion graphics, and commercial advertisements.
             </motion.p>
 
-            {/* CTAs */}
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -391,7 +368,6 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Bottom Scroll indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 opacity-50 select-none">
             <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-500">Scroll Down</span>
             <ChevronDown className="w-4 h-4 text-zinc-500 animate-bounce" />
@@ -401,95 +377,73 @@ export default function Home() {
         {/* ================= FEATURED SHOWREEL ================= */}
         <section id="showreel" className="w-full py-24 bg-dark-950 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-5xl w-full flex flex-col gap-12">
-            
-            {/* Header */}
             <div className="flex flex-col gap-3 text-center md:text-left">
               <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Featured Showreel</span>
               <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white leading-tight">
-                Cinematic Portfolio Master Reel
+                Master Portfolio Reel
               </h2>
             </div>
-
-            {/* Custom scrubber player */}
             <InteractiveTimeline />
           </div>
         </section>
 
-        {/* ================= PROJECTS SECTION ================= */}
+        {/* ================= FEATURED PROJECTS SECTION ================= */}
         <section id="projects" className="w-full py-28 bg-dark-900 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-6xl w-full flex flex-col gap-16">
             
-            {/* Section Title */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
               <div className="flex flex-col gap-3">
-                <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Showcase Projects</span>
+                <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Main Showcase</span>
                 <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white">
-                  Crafted Visual Work
+                  Featured Projects
                 </h2>
               </div>
               <p className="max-w-md text-zinc-400 text-sm leading-relaxed">
-                Explore individual project showcases highlighting pacing, custom sound design, motion graphics integration, and Resolve color tuning.
+                Click any project to play the full video edit, inspect timeline specs, software workflows, and post-production highlights.
               </p>
             </div>
 
-            {/* Projects Grid */}
+            {/* Grid of Featured Projects */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {projectsData.map((project) => (
+              {featuredProjects.map((project) => (
                 <div
                   key={project.id}
                   onClick={() => setSelectedProject(project)}
                   onMouseEnter={() => {
                     setHoveredProjectId(project.id);
                     setIsHoveredInteractive(true);
-                    setCursorHoverText("OPEN");
+                    setCursorHoverText("PLAY");
                   }}
                   onMouseLeave={() => {
                     setHoveredProjectId(null);
                     setIsHoveredInteractive(false);
                     setCursorHoverText("");
                   }}
-                  className="group cursor-pointer bg-zinc-950 border border-white/5 hover:border-gold-500/20 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 select-none flex flex-col h-full"
+                  className="group cursor-pointer bg-zinc-950 border border-white/5 hover:border-gold-500/30 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 select-none flex flex-col h-full"
                 >
-                  {/* Visual Preview Box */}
                   <div className="relative aspect-video w-full overflow-hidden bg-black">
-                    {/* Dark gradient overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-transparent z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10" />
 
-                    {/* Standard Image Thumbnail */}
-                    <div className="w-full h-full relative transition-transform duration-500 scale-100 group-hover:scale-105">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={`https://images.pexels.com/photos/3532540/pexels-photo-3532540.jpeg?auto=compress&cs=tinysrgb&w=640&dpr=1`} // placeholder matching style
-                        alt={project.title}
-                        className="w-full h-full object-cover"
-                      />
+                    {/* YouTube High-Res Thumbnail */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://img.youtube.com/vi/${project.youtubeId}/maxresdefault.jpg`}
+                      alt={project.title}
+                      className="w-full h-full object-cover transition-transform duration-500 scale-100 group-hover:scale-105"
+                    />
+
+                    {/* Play Button Overlay on Hover */}
+                    <div className="absolute inset-0 z-20 flex items-center justify-center opacity-80 group-hover:opacity-100 transition-opacity">
+                      <div className="w-14 h-14 rounded-full bg-black/60 border border-gold-500/40 text-gold-500 flex items-center justify-center shadow-xl group-hover:bg-gold-500 group-hover:text-dark-950 transition-all scale-95 group-hover:scale-110">
+                        <Play className="w-6 h-6 fill-current ml-0.5" />
+                      </div>
                     </div>
 
-                    {/* Silent Video Preview playing on Hover */}
-                    <AnimatePresence>
-                      {hoveredProjectId === project.id && (
-                        <motion.video
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{ duration: 0.3 }}
-                          src={project.fallbackVideo}
-                          className="absolute inset-0 w-full h-full object-cover z-20"
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                        />
-                      )}
-                    </AnimatePresence>
-
-                    {/* Software Badge */}
                     <div className="absolute top-4 left-4 z-30 bg-black/80 backdrop-blur-md px-3 py-1 rounded text-[10px] font-mono border border-white/10 text-gold-500 uppercase tracking-wider">
                       {project.software}
                     </div>
                   </div>
 
-                  {/* Text details */}
                   <div className="p-6 flex flex-col gap-4 flex-1 justify-between">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between">
@@ -514,7 +468,7 @@ export default function Home() {
                     </p>
 
                     <div className="flex items-center gap-1.5 text-xs font-mono uppercase tracking-widest text-gold-500 font-bold group-hover:translate-x-1.5 transition-transform mt-2">
-                      View Case Study
+                      Watch Video & Case Study
                       <ArrowUpRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
@@ -524,7 +478,73 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ================= IMERSIVE FULL-SCREEN CASE STUDY MODAL ================= */}
+        {/* ================= VERTICAL SHORTS & REELS GALLERY ================= */}
+        <section id="shorts" className="w-full py-28 bg-dark-950 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
+          <div className="max-w-6xl w-full flex flex-col gap-16">
+            
+            <div className="flex flex-col gap-3 text-center">
+              <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold flex items-center justify-center gap-2">
+                <Smartphone className="w-4 h-4 text-gold-500" /> High-Retention Shorts & Reels
+              </span>
+              <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white">
+                Short-Form Content Showcase
+              </h2>
+              <p className="max-w-lg mx-auto text-zinc-400 text-xs">
+                Fast-paced vertical videos designed for maximum viewer retention, speed ramping, kinetic typography, and instant viral hook engagement.
+              </p>
+            </div>
+
+            {/* 9:16 Vertical Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {shortsGallery.map((short) => (
+                <div
+                  key={short.id}
+                  onClick={() => setSelectedProject(short)}
+                  onMouseEnter={() => {
+                    setIsHoveredInteractive(true);
+                    setCursorHoverText("WATCH");
+                  }}
+                  onMouseLeave={() => setIsHoveredInteractive(false)}
+                  className="group cursor-pointer bg-zinc-900 border border-white/5 hover:border-gold-500/40 rounded-2xl overflow-hidden shadow-2xl transition-all duration-300 flex flex-col select-none"
+                >
+                  <div className="relative aspect-[9/16] w-full overflow-hidden bg-black">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40 z-10" />
+
+                    {/* YouTube Thumbnail */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://img.youtube.com/vi/${short.youtubeId}/hqdefault.jpg`}
+                      alt={short.title}
+                      className="w-full h-full object-cover transition-transform duration-500 scale-100 group-hover:scale-105"
+                    />
+
+                    {/* Play Badge */}
+                    <div className="absolute inset-0 z-20 flex items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-black/60 border border-gold-500/50 text-gold-500 flex items-center justify-center shadow-xl group-hover:bg-gold-500 group-hover:text-dark-950 transition-all scale-95 group-hover:scale-110">
+                        <Play className="w-5 h-5 fill-current ml-0.5" />
+                      </div>
+                    </div>
+
+                    <div className="absolute top-3 left-3 z-30 bg-black/80 px-2 py-0.5 rounded text-[8px] font-mono text-gold-500 uppercase border border-white/10">
+                      SHORTS
+                    </div>
+                  </div>
+
+                  <div className="p-4 flex flex-col gap-2">
+                    <h4 className="text-xs font-display font-extrabold uppercase text-white truncate group-hover:text-gold-500 transition-colors">
+                      {short.title}
+                    </h4>
+                    <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
+                      {short.software}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ================= FULL-SCREEN VIDEO MODAL ================= */}
         <AnimatePresence>
           {selectedProject && (
             <motion.div
@@ -533,25 +553,20 @@ export default function Home() {
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-50 overflow-y-auto bg-black/95 backdrop-blur-md p-4 md:p-8 flex items-center justify-center font-sans select-none"
             >
-              {/* Click outside container to close */}
               <div className="absolute inset-0 cursor-pointer" onClick={() => setSelectedProject(null)} />
 
-              {/* Box */}
               <motion.div
                 initial={{ y: 50, scale: 0.95 }}
                 animate={{ y: 0, scale: 1 }}
                 exit={{ y: 50, scale: 0.95 }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className="relative w-full max-w-4xl bg-zinc-950 rounded-2xl border border-white/10 shadow-3xl z-10 overflow-hidden max-h-[90vh] flex flex-col"
+                className={`relative w-full ${selectedProject.aspectRatio === "9:16" ? "max-w-md" : "max-w-4xl"} bg-zinc-950 rounded-2xl border border-white/10 shadow-3xl z-10 overflow-hidden max-h-[90vh] flex flex-col`}
               >
-                
-                {/* Header controls (fixed) */}
                 <div className="flex justify-between items-center bg-zinc-900/90 backdrop-blur-md px-6 py-4 border-b border-white/5 z-20 shrink-0">
                   <div className="flex items-center gap-3">
                     <span className="text-[10px] font-mono bg-gold-500/10 text-gold-500 px-2 py-0.5 rounded border border-gold-500/20 uppercase tracking-widest font-bold">
                       {selectedProject.software}
                     </span>
-                    <span className="text-xs font-mono text-zinc-500 uppercase tracking-widest hidden sm:inline">|</span>
                     <span className="text-xs font-mono text-zinc-400 uppercase tracking-widest hidden sm:inline">
                       {selectedProject.role}
                     </span>
@@ -564,94 +579,56 @@ export default function Home() {
                   </button>
                 </div>
 
-                {/* Content Panel (scrollable) */}
-                <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-8">
-                  {/* Large Cinematic Player */}
-                  <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-black group select-none shadow-xl shrink-0">
-                    <video
-                      src={selectedProject.fallbackVideo}
-                      className="w-full h-full object-cover"
-                      autoPlay
-                      loop
-                      controls
-                      playsInline
+                <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6">
+                  {/* Embedded YouTube Player */}
+                  <div className={`relative ${selectedProject.aspectRatio === "9:16" ? "aspect-[9/16]" : "aspect-video"} w-full rounded-xl overflow-hidden border border-white/10 bg-black shadow-xl shrink-0`}>
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${selectedProject.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
+                      title={selectedProject.title}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
                     />
                   </div>
 
-                  {/* Title & Metadata Details */}
-                  <div className="flex flex-col gap-4">
-                    <h3 className="text-2xl md:text-4xl font-display font-extrabold uppercase tracking-tight text-white border-b border-white/5 pb-4">
-                      {selectedProject.title}
-                    </h3>
-
-                    {/* Metadata Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-zinc-900/30 p-4 rounded-xl border border-white/5 text-xs font-mono uppercase tracking-wider text-zinc-400">
-                      <div>
-                        <span className="text-zinc-500 block text-[10px] mb-1">ROLE</span>
-                        <span className="text-white font-bold">{selectedProject.role}</span>
-                      </div>
-                      <div>
-                        <span className="text-zinc-500 block text-[10px] mb-1">SOFTWARE</span>
-                        <span className="text-white font-bold">{selectedProject.software}</span>
-                      </div>
-                      <div>
-                        <span className="text-zinc-500 block text-[10px] mb-1">TIMELINE</span>
-                        <span className="text-white font-bold">2026 PRO</span>
-                      </div>
-                      <div>
-                        <span className="text-zinc-500 block text-[10px] mb-1">DIFFICULTY</span>
-                        <span className="text-white font-bold">ADVANCED VFX</span>
-                      </div>
+                  <div className="flex flex-col gap-3">
+                    <div className="flex justify-between items-start gap-4">
+                      <h3 className="text-xl md:text-2xl font-display font-extrabold uppercase tracking-tight text-white">
+                        {selectedProject.title}
+                      </h3>
+                      <a
+                        href={selectedProject.youtubeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-mono text-gold-500 hover:text-white flex items-center gap-1 shrink-0"
+                      >
+                        YouTube Link <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
                     </div>
+                    <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+                      {selectedProject.description}
+                    </p>
                   </div>
 
-                  {/* Core Description & Highlights */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Left Description */}
-                    <div className="md:col-span-2 flex flex-col gap-4">
-                      <h4 className="text-sm font-mono uppercase tracking-widest text-gold-500 font-bold">
-                        Project Overview
-                      </h4>
-                      <p className="text-sm text-zinc-300 leading-relaxed font-sans">
-                        {selectedProject.description}
-                      </p>
-                      <p className="text-xs text-zinc-500 leading-relaxed font-sans">
-                        This workflow involves structural pacing adjustments matching audio queues, tailored keyframe speed ramping curves for extreme viewer retention, DaVinci Resolve color wheel adjustment for cinematic depth, and clean title design to keep advertisements and trailers highly engaging.
-                      </p>
-                    </div>
-
-                    {/* Right Highlights */}
-                    <div className="flex flex-col gap-4 bg-zinc-900/20 p-5 rounded-xl border border-white/5">
-                      <h4 className="text-sm font-mono uppercase tracking-widest text-gold-500 font-bold">
-                        Workflow Highlights
-                      </h4>
-                      <ul className="flex flex-col gap-2.5">
-                        {selectedProject.highlights.map((hl, idx) => (
-                          <li key={idx} className="flex gap-2 text-xs text-zinc-300 leading-relaxed font-sans items-start">
-                            <span className="text-gold-500 font-bold shrink-0 mt-0.5">✓</span>
-                            <span>{hl}</span>
-                          </li>
-                        ))}
-                      </ul>
+                  <div className="flex flex-col gap-2 bg-zinc-900/30 p-4 rounded-xl border border-white/5">
+                    <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Highlights</span>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {selectedProject.highlights.map((hl, idx) => (
+                        <span key={idx} className="text-[10px] font-mono bg-zinc-900 px-2.5 py-1 rounded text-zinc-300 border border-white/5">
+                          ✓ {hl}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </div>
-
-                {/* Footer case-study info */}
-                <div className="bg-zinc-900/60 px-6 py-4 border-t border-white/5 text-[10px] font-mono text-zinc-500 text-center shrink-0">
-                  You can configure this showcase in src/data/projectsData.ts
-                </div>
-
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ================= SKILLS SECTION ================= */}
+        {/* ================= SKILLS DASHBOARD SECTION ================= */}
         <section id="skills" className="w-full py-28 bg-dark-950 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-5xl w-full flex flex-col gap-16">
-            
-            {/* Header */}
             <div className="flex flex-col gap-3 text-center">
               <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Technical Expertise</span>
               <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white leading-tight">
@@ -662,16 +639,12 @@ export default function Home() {
               </p>
             </div>
 
-            {/* Interactive grading and speed ramping sub-components */}
             <div className="flex flex-col gap-12">
               <ColorWheel />
               <SpeedRamp />
             </div>
 
-            {/* Skill categories progress slides */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4 select-none">
-              
-              {/* Box 1 */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-4 select-none">
               <div className="bg-zinc-950 p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
                 <span className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold">Editing Competencies</span>
                 <div className="flex flex-col gap-3.5">
@@ -693,7 +666,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Box 2 */}
               <div className="bg-zinc-950 p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
                 <span className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold">Motion & VFX</span>
                 <div className="flex flex-col gap-3.5">
@@ -715,7 +687,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Box 3 */}
               <div className="bg-zinc-950 p-6 rounded-2xl border border-white/5 flex flex-col gap-4">
                 <span className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold">Color & Audio</span>
                 <div className="flex flex-col gap-3.5">
@@ -736,17 +707,13 @@ export default function Home() {
                   ))}
                 </div>
               </div>
-
             </div>
-
           </div>
         </section>
 
         {/* ================= TESTIMONIALS SECTION ================= */}
         <section className="w-full py-24 bg-dark-900 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-4xl w-full flex flex-col gap-12">
-            
-            {/* Header */}
             <div className="flex flex-col gap-3 text-center">
               <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Testimonials</span>
               <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white leading-tight">
@@ -754,7 +721,6 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Testimonials Slides Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 select-none">
               {[
                 {
@@ -796,13 +762,9 @@ export default function Home() {
         <section id="about" className="w-full py-28 bg-dark-950 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-5xl w-full flex flex-col lg:flex-row gap-12 items-center">
             
-            {/* Left Image Placeholder Frame */}
             <div className="w-full lg:w-2/5 flex justify-center">
               <div className="relative aspect-[3/4] w-full max-w-sm rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 group select-none shadow-2xl">
-                {/* Overlay vignette */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
-                
-                {/* Base photo placeholder */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="https://images.pexels.com/photos/3183150/pexels-photo-3183150.jpeg?auto=compress&cs=tinysrgb&w=600"
@@ -817,7 +779,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Story Details */}
             <div className="w-full lg:w-3/5 flex flex-col gap-6 select-none">
               <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">About Me</span>
               <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white leading-tight">
@@ -827,7 +788,6 @@ export default function Home() {
                 I believe great editing is invisible. It keeps audiences engaged, drives emotion, and transforms raw footage into unforgettable experiences. Through cinematic storytelling, motion graphics, sound design, and color grading, I create videos that capture attention and leave lasting impressions.
               </p>
               
-              {/* Credentials / Certification */}
               <div className="mt-4 p-5 rounded-2xl border border-white/5 bg-zinc-900/20 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-500 shrink-0 shadow-lg">
@@ -857,8 +817,6 @@ export default function Home() {
         {/* ================= WHY HIRE ME SECTION ================= */}
         <section id="why-me" className="w-full py-28 bg-dark-900 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-5xl w-full flex flex-col gap-16">
-            
-            {/* Header */}
             <div className="flex flex-col gap-3 text-center">
               <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold font-mono">Why Hire Me</span>
               <h2 className="text-3xl md:text-5xl font-display font-extrabold uppercase tracking-tight text-white">
@@ -866,7 +824,6 @@ export default function Home() {
               </h2>
             </div>
 
-            {/* Cards Grid with mouse follow glow */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
@@ -927,8 +884,6 @@ export default function Home() {
         {/* ================= CONTACT SECTION ================= */}
         <section id="contact" className="w-full py-28 bg-dark-950 border-t border-white/5 px-6 md:px-12 flex flex-col items-center">
           <div className="max-w-5xl w-full flex flex-col lg:flex-row gap-12">
-            
-            {/* Left Contact details */}
             <div className="w-full lg:w-2/5 flex flex-col gap-8 justify-between select-none">
               <div className="flex flex-col gap-6">
                 <span className="text-[10px] font-mono text-gold-500 uppercase tracking-widest font-bold">Get In Touch</span>
@@ -940,9 +895,7 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Direct links list */}
               <div className="flex flex-col gap-4">
-                {/* Scheduler CTA */}
                 <a
                   href="https://calendly.com/"
                   target="_blank"
@@ -955,7 +908,6 @@ export default function Home() {
                   <ArrowUpRight className="w-4 h-4" />
                 </a>
 
-                {/* Social Handles */}
                 <div className="flex gap-3 text-zinc-400 font-mono text-xs uppercase tracking-wider mt-2">
                   <a
                     href="https://www.linkedin.com/in/rinku-dhakad-97a55a403/"
@@ -981,10 +933,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Contact Form */}
             <div className="w-full lg:w-3/5">
               <div className="bg-zinc-900/30 border border-white/5 rounded-2xl p-6 md:p-8 relative">
-                
                 <AnimatePresence>
                   {formSubmitted ? (
                     <motion.div
@@ -1005,7 +955,6 @@ export default function Home() {
                 </AnimatePresence>
 
                 <form onSubmit={handleFormSubmit} className="flex flex-col gap-6">
-                  {/* Name field */}
                   <div className="flex flex-col gap-1">
                     <label htmlFor="name" className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
                       Your Name
@@ -1022,7 +971,6 @@ export default function Home() {
                     />
                   </div>
 
-                  {/* Email field */}
                   <div className="flex flex-col gap-1">
                     <label htmlFor="email" className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
                       Email Address
@@ -1039,7 +987,6 @@ export default function Home() {
                     />
                   </div>
 
-                  {/* Project Type */}
                   <div className="flex flex-col gap-1">
                     <label htmlFor="projectType" className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
                       Project Format
@@ -1058,7 +1005,6 @@ export default function Home() {
                     </select>
                   </div>
 
-                  {/* Message */}
                   <div className="flex flex-col gap-1">
                     <label htmlFor="message" className="text-[10px] font-mono uppercase tracking-widest text-zinc-500">
                       Project Brief
@@ -1075,7 +1021,6 @@ export default function Home() {
                     />
                   </div>
 
-                  {/* Submit Button */}
                   <button
                     type="submit"
                     className="flex items-center justify-center gap-2 w-full py-4 bg-zinc-950 border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500 hover:text-dark-950 text-gold-500 font-display font-extrabold text-sm uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-lg"
@@ -1086,7 +1031,6 @@ export default function Home() {
                     <Send className="w-4 h-4" />
                   </button>
                 </form>
-
               </div>
             </div>
 
@@ -1095,14 +1039,17 @@ export default function Home() {
 
       </main>
 
-      {/* ================= WEBSITE FOOTER ================= */}
       <footer className="w-full bg-black border-t border-white/5 py-12 px-6 md:px-12 flex flex-col md:flex-row justify-between items-center gap-6 font-mono text-[10px] text-zinc-500 select-none uppercase tracking-widest">
         <div>
           © {currentYear} Rinku Dhakad. All rights reserved.
         </div>
         <div className="flex items-center gap-6">
-          <a href="mailto:rinkudhakad@example.com" className="hover:text-gold-500 transition-colors">
-            rinkudhakad@example.com
+          <a href="https://www.instagram.com/rinku.dhakadd/" target="_blank" rel="noopener noreferrer" className="hover:text-gold-500 transition-colors">
+            Instagram
+          </a>
+          <span>|</span>
+          <a href="https://www.linkedin.com/in/rinku-dhakad-97a55a403/" target="_blank" rel="noopener noreferrer" className="hover:text-gold-500 transition-colors">
+            LinkedIn
           </a>
           <span>|</span>
           <span className="text-zinc-600">Location: India</span>
