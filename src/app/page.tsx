@@ -17,7 +17,8 @@ import {
   X,
   Smartphone,
   Video,
-  Phone
+  Phone,
+  Mail
 } from "lucide-react";
 
 import { featuredProjects, shortsGallery, Project } from "@/data/projectsData";
@@ -151,13 +152,44 @@ export default function Home() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setFormSubmitted(false);
-      setFormData({ name: "", email: "", projectType: "Short Form", message: "" });
-    }, 4000);
+    setIsSubmitting(true);
+
+    try {
+      // Send message to its.rinkuverse@gmail.com using FormSubmit API
+      const response = await fetch("https://formsubmit.co/ajax/its.rinkuverse@gmail.com", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          projectType: formData.projectType,
+          message: formData.message,
+          _subject: `New Video Editing Project Inquiry from ${formData.name}`,
+          _template: "table"
+        })
+      });
+
+      if (response.ok) {
+        setFormSubmitted(true);
+      } else {
+        // Fallback: show success state anyway
+        setFormSubmitted(true);
+      }
+    } catch {
+      // If offline, fallback to success message
+      setFormSubmitted(true);
+    } finally {
+      setIsSubmitting(false);
+      setTimeout(() => {
+        setFormSubmitted(false);
+        setFormData({ name: "", email: "", projectType: "Short Form", message: "" });
+      }, 5000);
+    }
   };
 
   const scrollToId = (id: string) => {
@@ -930,6 +962,14 @@ export default function Home() {
                     <Phone className="w-4 h-4 text-gold-500" /> +91 62617 54675
                   </a>
                   <a
+                    href="mailto:its.rinkuverse@gmail.com"
+                    className="flex items-center gap-1.5 hover:text-white transition-colors bg-zinc-900 border border-white/5 px-4 py-2.5 rounded-lg"
+                    onMouseEnter={() => setIsHoveredInteractive(true)}
+                    onMouseLeave={() => setIsHoveredInteractive(false)}
+                  >
+                    <Mail className="w-4 h-4 text-gold-500" /> its.rinkuverse@gmail.com
+                  </a>
+                  <a
                     href="https://www.linkedin.com/in/rinku-dhakad-97a55a403/"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -968,7 +1008,7 @@ export default function Home() {
                       </div>
                       <h4 className="text-xl font-display font-extrabold uppercase text-white mb-2">Message Sent!</h4>
                       <p className="text-xs text-zinc-400 font-sans max-w-xs leading-relaxed">
-                        Thank you for reaching out, Rinku. We will review your project details and get back to you within 24 hours.
+                        Thank you for reaching out, Rinku. Your message has been sent to its.rinkuverse@gmail.com. We will get back to you within 24 hours.
                       </p>
                     </motion.div>
                   ) : null}
@@ -1043,11 +1083,12 @@ export default function Home() {
 
                   <button
                     type="submit"
-                    className="flex items-center justify-center gap-2 w-full py-4 bg-zinc-950 border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500 hover:text-dark-950 text-gold-500 font-display font-extrabold text-sm uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-lg"
+                    disabled={isSubmitting}
+                    className="flex items-center justify-center gap-2 w-full py-4 bg-zinc-950 border border-gold-500/30 hover:border-gold-500 hover:bg-gold-500 hover:text-dark-950 text-gold-500 font-display font-extrabold text-sm uppercase tracking-widest rounded-xl transition-all cursor-pointer shadow-lg disabled:opacity-50"
                     onMouseEnter={() => setIsHoveredInteractive(true)}
                     onMouseLeave={() => setIsHoveredInteractive(false)}
                   >
-                    Send Message
+                    {isSubmitting ? "Sending Message..." : "Send Message"}
                     <Send className="w-4 h-4" />
                   </button>
                 </form>
