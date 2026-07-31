@@ -16,7 +16,8 @@ import {
   BookOpen,
   X,
   Smartphone,
-  Video
+  Video,
+  Phone
 } from "lucide-react";
 
 import { featuredProjects, shortsGallery, Project } from "@/data/projectsData";
@@ -26,6 +27,17 @@ import InteractiveTimeline from "@/components/InteractiveTimeline";
 import CertificateModal from "@/components/CertificateModal";
 
 // Custom SVG components for brand logos because they are removed in Lucide v1.x
+const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    {...props}
+  >
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.573-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347z" />
+    <path d="M12 2C6.477 2 2 6.477 2 12c0 1.891.524 3.66 1.438 5.168L2 22l4.975-1.399A9.954 9.954 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18c-1.644 0-3.178-.445-4.502-1.221l-.323-.19-2.957.832.846-2.868-.209-.333A7.954 7.954 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z" />
+  </svg>
+);
+
 const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     viewBox="0 0 24 24"
@@ -897,18 +909,26 @@ export default function Home() {
 
               <div className="flex flex-col gap-4">
                 <a
-                  href="https://calendly.com/"
+                  href="https://wa.me/916261754675?text=Hi%20Rinku,%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20discuss%20a%20video%20editing%20project!"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2.5 px-6 py-4 bg-gold-500 hover:bg-gold-600 text-dark-950 font-display font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(197,168,128,0.2)]"
+                  className="inline-flex items-center justify-center gap-2.5 px-6 py-4 bg-emerald-500 hover:bg-emerald-600 text-dark-950 font-display font-extrabold text-xs uppercase tracking-widest rounded-xl transition-all shadow-[0_0_25px_rgba(16,185,129,0.3)]"
                   onMouseEnter={() => setIsHoveredInteractive(true)}
                   onMouseLeave={() => setIsHoveredInteractive(false)}
                 >
-                  Schedule Consultation Call
-                  <ArrowUpRight className="w-4 h-4" />
+                  <WhatsAppIcon className="w-5 h-5 fill-current" />
+                  Chat on WhatsApp (+91 62617 54675)
                 </a>
 
-                <div className="flex gap-3 text-zinc-400 font-mono text-xs uppercase tracking-wider mt-2">
+                <div className="flex flex-wrap gap-3 text-zinc-400 font-mono text-xs uppercase tracking-wider mt-1">
+                  <a
+                    href="tel:+916261754675"
+                    className="flex items-center gap-1.5 hover:text-white transition-colors bg-zinc-900 border border-white/5 px-4 py-2.5 rounded-lg"
+                    onMouseEnter={() => setIsHoveredInteractive(true)}
+                    onMouseLeave={() => setIsHoveredInteractive(false)}
+                  >
+                    <Phone className="w-4 h-4 text-gold-500" /> +91 62617 54675
+                  </a>
                   <a
                     href="https://www.linkedin.com/in/rinku-dhakad-97a55a403/"
                     target="_blank"
